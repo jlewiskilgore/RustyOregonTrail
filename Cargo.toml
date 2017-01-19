@@ -1,0 +1,7 @@
+[package]
+name = "rusty_oregon_trail"
+version = "0.1.0"
+authors = ["J. Lewis Kilgore"]
+
+[dependencies]
+rand = "0.3"

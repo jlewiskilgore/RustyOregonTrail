@@ -1,10 +1,28 @@
 extern crate rand;
 
 use std::io;
+use std::cmp::Ordering;
 use rand::Rng;
 
 fn main() {
+	print_introduction();
+
 	//Give player instructions if they choose
+	let mut need_instructions = String::new();
+
+	io::stdin()
+		.read_line(&mut need_instructions)
+		.expect("failed to read line");
+
+	if need_instructions.trim().to_uppercase() == "YES" {
+		print_instructions();
+	}	
+
+	//Player makes initial purchases
+	initial_shopping();
+}
+
+fn print_introduction() {
 	println!("");
 	println!("*==================================================*");
 	println!("|                                				     |");
@@ -15,16 +33,10 @@ fn main() {
 	println!("*==================================================*");
 	println!("");
 	println!("DO YOU NEED INSTRUCTIONS (YES/NO)");
-
-	let mut need_instructions = String::new();
-
-	io::stdin().read_line(&mut need_instructions).expect("failed to read line");
-
-	print_instructions();
-	//Player makes initial purchases
 }
 
 fn print_instructions() {
+	println!("");
 	println!("THIS PROGRAM SIMULATES A TRIP OVER THE OREGON TRAIL FROM");
 	println!("INDEPENDENCE, MISSOURI TO OREGON CITY, OREGON IN 1847.");
 	println!("YOUR FAMILY OF FIVE WILL COVER THE 2000 MILE OREGON TRAIL");
@@ -70,18 +82,96 @@ fn print_instructions() {
 	println!("GOOD LUCK!!!");
 }
 
-fn going_shopping() {
+fn initial_shopping() {
+	let mut oxen = 0;
+	let mut food = 0;
+	let mut ammo = 0;
+	let mut clothing = 0;
+	let mut misc_supplies = 0;
+	let mut total_spent = 0;
+
+	let oxen_low = 200;
+	let oxen_high = 300;
+	let min_amount = 0;
+	let budget = 700;
+
+	println!("");
+	//Player can spend between 200 and 300 on Oxen
 	println!("HOW MUCH DO YOU WANT TO SPEND ON YOUR OXEN TEAM");
-	println!("NOT ENOUGH");
-	println!("TOO MUCH");
+	
+	let mut amount = String::new();
+	io::stdin().read_line(&mut amount).expect("failed to read line");
+	let amount: u32 = amount.trim().parse().expect("Please type a number!");
+
+	if &amount < &oxen_low {
+		println!("NOT ENOUGH");
+	}
+	if &amount > &oxen_high {
+		println!("TOO MUCH");
+	}
+
+	oxen = amount;
+
+	//Player can spend anything greater than 0 on Food
 	println!("HOW MUCH DO YOU WANT TO SPEND ON FOOD");
-	println!("IMPOSSIBLE");
+
+	let mut amount = String::new();
+	io::stdin().read_line(&mut amount).expect("failed to read line");
+	let amount: u32 = amount.trim().parse().expect("Please type a number!");
+	
+	if &amount < &min_amount {
+		println!("IMPOSSIBLE");
+	}
+
+	food = amount;
+
+	//Player can spend anything greater than 0 on Ammunition
 	println!("HOW MUCH DO YOU WANT TO SPEND ON AMMUNITION");
-	println!("IMPOSSIBLE");
+
+	let mut amount = String::new();
+	io::stdin().read_line(&mut amount).expect("failed to read line");
+	let amount: u32 = amount.trim().parse().expect("Please type a number!");
+
+	if &amount < &min_amount {
+		println!("IMPOSSIBLE");
+	}
+
+	ammo = amount;
+	
+	//Player can spend anything greater than 0 on Clothing
 	println!("HOW MUCH DO YOU WANT TO SPEND ON CLOTHING");
-	println!("IMPOSSIBLE");
+
+	let mut amount = String::new();
+	io::stdin().read_line(&mut amount).expect("failed to read line");
+	let amount: u32 = amount.trim().parse().expect("Please type a number!");
+
+	if &amount < &min_amount {
+		println!("IMPOSSIBLE");
+	}
+
+	clothing = amount;
+
+	//Player can spend anything greater than 0 on Misc Supplies
 	println!("HOW MUCH DO YOU WANT TO SPEND ON MISCELANEOUS SUPPLIES");
-	println!("IMPOSSIBLE");
-	println!("YOU OVERSPENT--YOU ONLY HAD $700 TO SPEND.  BUY AGAIN");
-	println!("AFTER ALL YOUR PURCHASES, YOU NOW HAVE $xxx DOLLARS LEFT")
+
+	let mut amount = String::new();
+	io::stdin().read_line(&mut amount).expect("failed to read line");
+	let amount: u32 = amount.trim().parse().expect("Please type a number!");
+
+	if &amount < &min_amount {
+		println!("IMPOSSIBLE");
+	}
+
+	misc_supplies = amount;
+
+	//Sum of all spent must be less than $700
+	total_spent = oxen + food + ammo + clothing + misc_supplies;
+	println!("{}", total_spent);
+
+	if &total_spent > &budget {
+		println!("YOU OVERSPENT--YOU ONLY HAD $700 TO SPEND.  BUY AGAIN");
+	}
+	println!("");
+	println!("AFTER ALL YOUR PURCHASES, YOU NOW HAVE {} DOLLARS LEFT", &budget - &total_spent);
+	println!("");
 }
